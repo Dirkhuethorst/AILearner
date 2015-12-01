@@ -25,7 +25,7 @@ public class MNBTClassifer {
 		}
 	}
 
-	
+	//calculate estimator for a word, given a class.
 	public double wordprob(String word, ClassifierClass cc) {
 		/**spamdict.put("viagra", 5);
 		spamdict.put("girls", 1);
@@ -46,12 +46,13 @@ public class MNBTClassifer {
 		int V = vocabulary.size();
 		int occ = cc.getocc(word);
 		int Nc = cc.getvocsize();
-		double prob = (occ + k)/ (Nc + V);
+		double estimator = (occ + k)/ (Nc + V);
 		
-		return prob;
+		return estimator;
 	}
 	
-	public double classify(ArrayList<String> text){
+	public String classify(ArrayList<String> text){
+		double[] finalprob = new double[numberofclasses];
 		Map<String, Integer> tempmap = new HashMap<String, Integer>(); //tijdelijke map om voorkomen van woorden in op te slaan
 		for (String word : text) {// loop through all words.
 			if (tempmap.containsKey(word)) {// check if the dictionary contains
@@ -67,18 +68,34 @@ public class MNBTClassifer {
 		}
 		Set<String> uniquewords = new HashSet<String>();
 		uniquewords.addAll(text);
-		ArrayList<String> uniquewordslist = new ArrayList<String>();
+		ArrayList<String> uniquewordslist = new ArrayList<String>(uniquewords);
 		
-		double prob;
+		double[] prob = new double[uniquewordslist.size()];
+		
 		for (int i = 0; i < numberofclasses; i++){ 
-			for(String s : uniquewords){
-				prob = wordprob(s, classes[i]);
+			double prior = classes[i].getvocsize()/vocabulary.size();
+			finalprob[i] = prior;
+			for(int x=0; x < uniquewordslist.size(); x++){
+				int power = tempmap.get(uniquewordslist.get(x));
+				
+				prob[x] = wordprob(uniquewordslist.get(x), classes[i]);
+				finalprob[i] = finalprob[i] * Math.pow(prob[x], power);
+				
 			}
 			
+			
 		}
-	
+		//get maximum value of finalprob[i]
+		double vmax = finalprob[0];
+		int imax = 0;
+		for (int i = 0; i < finalprob.length; i++){
+			if (finalprob[imax] > vmax){
+			imax = i;
+			vmax = finalprob[imax];
+			}
+		}
 		
-		return 0;
+		return classes[imax].getname();
 	}
 	
 	public void updatevocsize(){
