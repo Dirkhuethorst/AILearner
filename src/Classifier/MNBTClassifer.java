@@ -15,16 +15,18 @@ public class MNBTClassifer {
 	private int numberofclasses;
 	private ClassifierClass[] classes; 
 	
-	public MNBTClassifer(String[] names){ 
-		numberofclasses = names.length;
+	public MNBTClassifer(Map<String, String> names){ 
+		numberofclasses = names.size();
 		classes = new ClassifierClass[numberofclasses];
-		for (int i = 0; i < numberofclasses; i++){ 
-			String classname = names[i];
-			classes[i] = new ClassifierClass(classname);
-			
+		int i = 0;
+		for (String child : names.keySet()){ 
+			classes[i] = new ClassifierClass(child, names.get(child));
+			i += 1;
 		}
 	}
-
+	public ClassifierClass[] getClasses(){
+		return classes;
+	}
 	//calculate estimator for a word, given a class.
 	public double wordprob(String word, ClassifierClass cc) {
 		/**spamdict.put("viagra", 5);
@@ -73,7 +75,10 @@ public class MNBTClassifer {
 		double[] prob = new double[uniquewordslist.size()];
 		
 		for (int i = 0; i < numberofclasses; i++){ 
-			double prior = classes[i].getvocsize()/vocabulary.size();
+			int files = getTotalFiles();
+			//double prior = classes[i].getvocsize()/vocabulary.size();
+			double prior = classes[i].getNumberOfFiles()/files;
+			System.out.println(classes[i].getname() + " " + prior);
 			finalprob[i] = prior;
 			for(int x=0; x < uniquewordslist.size(); x++){
 				int power = tempmap.get(uniquewordslist.get(x));
@@ -100,15 +105,24 @@ public class MNBTClassifer {
 	
 	public void updatevocsize(){
 		
-		for (int i = 1; i <= numberofclasses; i++){ 
+		for (int i = 0; i <= numberofclasses; i++){ 
 			vocabulary.addAll(classes[i].returnkeySet());
 			
 		}
 	}
 	
-	
+	public int getTotalFiles(){
+		int files = 0;
+		for (ClassifierClass child : classes){
+			files += child.getNumberOfFiles();
+		}
+		System.out.println(files);
+		return files;
+	}
 	public static void main(String[] args) {
-		String[] array = {"spam", "ham"};
+		Map<String, String> array = new HashMap<String, String>();
+		array.put("spam", "spm");
+		array.put("ham", "msg");
 		ArrayList<String> testfile= new ArrayList<String>();
 		testfile.add("viagra");
 		testfile.add("discount");

@@ -1,25 +1,31 @@
 package Classifier;
 
 import java.util.HashMap;
-import tokenize.Tokenizer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ClassifierClass {
 	private String classname;
-	
+	private String identifier;
+	private int numberOfFiles;
 	private Map<String, Integer> dict = new HashMap<String, Integer>();
 	
 	
-	public ClassifierClass(String name){
+	public ClassifierClass(String name, String identifier){
 		classname = name;
-		
+		this.identifier = identifier;
+		numberOfFiles = 0;
 	}
 	
 	public String getname(){
 		return classname;
 	}
+	
+	public String getIdentifer(){
+		return identifier;
+	}
+	
 	
 	public Set<String> returnkeySet(){
 		return dict.keySet();
@@ -54,5 +60,12 @@ public class ClassifierClass {
 		return occ;
 	}
 	
+	public int getNumberOfFiles(){
+		return numberOfFiles;
+	}
+	
+	public void increaseFileCount(){
+		numberOfFiles += 1;
+	}
 	
 }

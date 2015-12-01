@@ -7,10 +7,10 @@ import java.util.Scanner;;
 public class Tokenizer {
 
 	public static void main(String[] args) {
-		tokenize("EMAILS/3-1msg1.txt");
+		
 
 	}
-	public static ArrayList<String> tokenize(String pathname){
+	public ArrayList<String> tokenize(String pathname){
 		String file = "";
 		try {
 			file = readFile(pathname);
@@ -25,16 +25,14 @@ public class Tokenizer {
 			word = word.toLowerCase();
 			res.add(word);
 		}
-		System.out.println(res.toString());
 		return res;
 		
 	}
-	private static String readFile(String pathname) throws IOException {
+	private String readFile(String pathname) throws IOException {
 	    File file = new File(pathname);
 	    StringBuilder fileContents = new StringBuilder((int)file.length());
 	    Scanner scanner = new Scanner(file);
 	    String lineSeparator = System.getProperty("line.separator");
-
 	    try {
 	        while(scanner.hasNextLine()) {        
 	            fileContents.append(scanner.nextLine() + lineSeparator);
