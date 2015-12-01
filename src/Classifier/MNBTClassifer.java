@@ -85,6 +85,7 @@ public class MNBTClassifer {
 			
 			
 		}
+		
 		//get maximum value of finalprob[i]
 		double vmax = finalprob[0];
 		int imax = 0;
@@ -100,7 +101,7 @@ public class MNBTClassifer {
 	
 	public void updatevocsize(){
 		
-		for (int i = 1; i <= numberofclasses; i++){ 
+		for (int i = 0; i < numberofclasses; i++){ 
 			vocabulary.addAll(classes[i].returnkeySet());
 			
 		}
@@ -109,12 +110,25 @@ public class MNBTClassifer {
 	
 	public static void main(String[] args) {
 		String[] array = {"spam", "ham"};
-		ArrayList<String> testfile= new ArrayList<String>();
-		testfile.add("viagra");
-		testfile.add("discount");
+		ArrayList<String> testfilespam = new ArrayList<String>();
+		testfilespam.add("viagra");
+		testfilespam.add("discount");
+		ArrayList<String> testfileham = new ArrayList<String>();
+		testfileham.add("meeting");
+		testfileham.add("office");
+		ArrayList<String> testfile = new ArrayList<String>();
+		testfileham.add("viagra");
+		testfileham.add("discount");
+		testfileham.add("office");
+		
+	
 		MNBTClassifer classifier = new MNBTClassifer(array);
+		
+		classifier.classes[0].updatewords(testfilespam);
+		classifier.classes[1].updatewords(testfileham);
 		classifier.updatevocsize();
-		classifier.classify(testfile);
+		String test = classifier.classify(testfile);
+		System.out.println(test);
 	}
 	
 	
