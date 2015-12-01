@@ -1,8 +1,10 @@
 package Classifier;
 
 import java.util.HashMap;
+import tokenize.Tokenizer;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ClassifierClass {
 	private String classname;
@@ -19,8 +21,8 @@ public class ClassifierClass {
 		return classname;
 	}
 	
-	public Map<String, Integer> returnmap(){
-		return dict;
+	public Set<String> returnkeySet(){
+		return dict.keySet();
 	}
 	
 	
@@ -46,7 +48,7 @@ public class ClassifierClass {
 		return dict.size();
 	}
 	
-	public int occ(String word){
+	public int getocc(String word){
 		
 		int occ = dict.containsKey(word) ? dict.get(word) : 0;
 		return occ;

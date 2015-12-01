@@ -1,5 +1,7 @@
 package Classifier;
 
+//import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class MNBTClassifer {
 	public MNBTClassifer(int amountclasses, String[] names){
 		numberofclasses = amountclasses;
 		classes = new ClassifierClass[amountclasses];
-		for (int i = 1; i <= numberofclasses; i++){ 
+		for (int i = 0; i < numberofclasses; i++){ 
 			String classname = names[i];
 			classes[i] = new ClassifierClass(classname);
 			
@@ -24,7 +26,7 @@ public class MNBTClassifer {
 	}
 
 	
-	public double wordprob(String word, Vocabulary classvoc) {
+	public double wordprob(String word, ClassifierClass cc) {
 		/**spamdict.put("viagra", 5);
 		spamdict.put("girls", 1);
 		spamdict.put("discount", 1);
@@ -42,20 +44,60 @@ public class MNBTClassifer {
 		
 		**/
 		int V = vocabulary.size();
-		int occ = classvoc.getocc(word);
-		int Nc = classvoc.getvocsize();
+		int occ = cc.getocc(word);
+		int Nc = cc.getvocsize();
 		double prob = (occ + k)/ (Nc + V);
 		
 		return prob;
 	}
 	
-	public double classify(){
+	public double classify(ArrayList<String> text){
+		Map<String, Integer> tempmap = new HashMap<String, Integer>(); //tijdelijke map om voorkomen van woorden in op te slaan
+		for (String word : text) {// loop through all words.
+			if (tempmap.containsKey(word)) {// check if the dictionary contains
+											// the word(as a key).
+				tempmap.put(word, tempmap.get(word) + 1);// then increment the
+													// occurence amount for
+													// that word with 1.
+			} else {
+				tempmap.put(word, 1);// otherwise add a new (key,value) pair to
+									// the map initially with a value equal
+									// to 1.
+			}
+		}
+		Set<String> uniquewords = new HashSet<String>();
+		uniquewords.addAll(text);
+		ArrayList<String> uniquewordslist = new ArrayList<String>();
+		
+		double prob;
+		for (int i = 0; i < numberofclasses; i++){ 
+			for(String s : uniquewords){
+				prob = wordprob(s, classes[i]);
+			}
+			
+		}
+	
+		
 		return 0;
 	}
 	
+	public void updatevocsize(){
+		
+		for (int i = 1; i <= numberofclasses; i++){ 
+			vocabulary.addAll(classes[i].returnkeySet());
+			
+		}
+	}
+	
+	
 	public static void main(String[] args) {
 		String[] array = {"spam", "ham"};
-		MNBTClassifer classifier = new MNBTClassifer(2, array);// use either test1() or test2() to run a test.
+		ArrayList<String> testfile= new ArrayList<String>();
+		testfile.add("viagra");
+		testfile.add("discount");
+		MNBTClassifer classifier = new MNBTClassifer(2, array);
+		classifier.updatevocsize();
+		classifier.classify(testfile);
 	}
 	
 	
