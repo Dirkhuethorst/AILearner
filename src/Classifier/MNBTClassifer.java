@@ -15,9 +15,9 @@ public class MNBTClassifer {
 	private int numberofclasses;
 	private ClassifierClass[] classes; 
 	
-	public MNBTClassifer(int amountclasses, String[] names){
-		numberofclasses = amountclasses;
-		classes = new ClassifierClass[amountclasses];
+	public MNBTClassifer(String[] names){ 
+		numberofclasses = names.length;
+		classes = new ClassifierClass[numberofclasses];
 		for (int i = 0; i < numberofclasses; i++){ 
 			String classname = names[i];
 			classes[i] = new ClassifierClass(classname);
@@ -112,7 +112,7 @@ public class MNBTClassifer {
 		ArrayList<String> testfile= new ArrayList<String>();
 		testfile.add("viagra");
 		testfile.add("discount");
-		MNBTClassifer classifier = new MNBTClassifer(2, array);
+		MNBTClassifer classifier = new MNBTClassifer(array);
 		classifier.updatevocsize();
 		classifier.classify(testfile);
 	}
