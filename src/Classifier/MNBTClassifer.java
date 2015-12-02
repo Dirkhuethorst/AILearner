@@ -85,7 +85,7 @@ public class MNBTClassifer {
 				int power = tempmap.get(uniquewordslist.get(x));
 
 				prob[x] = wordprob(uniquewordslist.get(x), child);
-				prob[x] = Math.abs(Math.log(prob[x])/Math.log(2));
+				prob[x] = Math.log(prob[x])/Math.log(2);
 				double set = child.getFinalProb() + Math.pow(prob[x], power);
 				child.setFinalProb(set);
 			}
