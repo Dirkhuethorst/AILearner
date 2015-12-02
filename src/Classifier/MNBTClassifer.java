@@ -45,12 +45,12 @@ public class MNBTClassifer {
 		//deze laat dubbele woorden weg.
 
 		 **/
-		
+
 		double V = vocabulary.size();
 		double occ = cc.getocc(word);
 		double Nc = cc.getvocsize();
 		double estimator = (occ + k)/ (Nc + V);
-		
+
 		return estimator;
 	}
 
@@ -88,17 +88,17 @@ public class MNBTClassifer {
 				prob[x] = Math.abs(Math.log(prob[x])/Math.log(2));
 				double set = child.getFinalProb() + Math.pow(prob[x], power);
 				child.setFinalProb(set);
-				}
+			}
 			child.setFinalProb(child.getFinalProb() * prior);
-			
-			
+
+
 
 		}
 		for (ClassifierClass child : classes) {
 			System.out.println(child.getname() + "final prob: " + child.getFinalProb());
 		}
-//		System.out.println(finalprob[0] + "<-- final probality on place one");
-//		System.out.println(finalprob[1] + "<-- final probality on place two");
+		//		System.out.println(finalprob[0] + "<-- final probality on place one");
+		//		System.out.println(finalprob[1] + "<-- final probality on place two");
 		//get maximum value of finalprob[i]
 		double vmax = 0;
 		ClassifierClass finalClass = null;
@@ -108,16 +108,17 @@ public class MNBTClassifer {
 				finalClass = child;
 			}
 		}
-		
+
 		return finalClass.getname();
 	}
 
 	public void updatevocsize(){
+		int i = 0;
 		for (ClassifierClass child : classes) {
 			vocabulary.addAll(child.returnkeySet());
-			System.out.println(child.getname() + " V-Set" + child.returnkeySet());
+			i += child.returnkeySet().size();
 		}
-		System.out.println(vocabulary.toString());
+		System.out.println("This: " + i + " should be equal to this: " + vocabulary.size());
 	}
 
 	public int getTotalFiles(){
@@ -130,6 +131,31 @@ public class MNBTClassifer {
 	}
 	public static void main(String[] args) {
 	}
+	//TODO remove this stupid thing i am trying to make the predictions better...
+	public void removeDuplicates(){
+		Set<String> duplicates = new HashSet<String>();
+		for (ClassifierClass child : classes){
+			//System.out.println("DEBUG1");
+			for (ClassifierClass baby : classes) {
+				//System.out.println("DEBUG2");
+				if (baby != child){
+					//System.out.println("DEBUG3");
+					for (String word : baby.returnkeySet()){
+						//System.out.println("DEBUG4");
+						if (child.returnkeySet().contains(word)){
+							//System.out.println("DEBUG5");
+							duplicates.add(word);
+						}
+					}
+				}
+			}
+		}
+		for (ClassifierClass removeit : classes) {
+			for (String word : duplicates){
+				removeit.returnkeySet().remove(word);
+			}
+		}
 
+	}
 
 }

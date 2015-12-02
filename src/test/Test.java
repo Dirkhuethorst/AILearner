@@ -18,10 +18,15 @@ public class Test {
 		TokenizeDirectory dir = new TokenizeDirectory();
 		dir.DirectoryTokenizer("EMAILS", classifier.getClasses());
 		classifier.updatevocsize();
-		System.out.println("V_SIZE " + classifier.getClasses()[0].getname() + "= " + classifier.getClasses()[0].getvocsize());
-		System.out.println("V_SIZE " + classifier.getClasses()[1].getname() + "= " + classifier.getClasses()[1].getvocsize());
+		
 		String spam = "EMAILS/spma13.txt";
 		String ham =  "TESTMAILS/8-817msg1.txt";
+		System.out.println("V_SIZE " + classifier.getClasses()[0].getname() + "= " + classifier.getClasses()[0].getvocsize());
+		System.out.println("V_SIZE " + classifier.getClasses()[1].getname() + "= " + classifier.getClasses()[1].getvocsize());
+		classifier.removeDuplicates();
+		classifier.updatevocsize();
+		System.out.println("V_SIZE " + classifier.getClasses()[0].getname() + "= " + classifier.getClasses()[0].getvocsize());
+		System.out.println("V_SIZE " + classifier.getClasses()[1].getname() + "= " + classifier.getClasses()[1].getvocsize());
 		System.out.println("Supposed to be spam: " + classifier.classify(tokenizer.tokenize(spam)));
 		System.out.println("Supposed to be ham: " + classifier.classify(tokenizer.tokenize(ham)));
 
