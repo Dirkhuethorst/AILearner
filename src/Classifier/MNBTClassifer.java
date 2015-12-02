@@ -14,7 +14,7 @@ public class MNBTClassifer {
 	private Set<String> vocabulary = new HashSet<String>();
 	private int numberofclasses;
 	private ClassifierClass[] classes; 
-	
+
 	public MNBTClassifer(Map<String, String> names){ 
 		numberofclasses = names.size();
 		classes = new ClassifierClass[numberofclasses];
@@ -43,74 +43,83 @@ public class MNBTClassifer {
 		vocabulary.add("meeting");
 		vocabulary.add("coupon"); //we kunnen als we meerdere voc. hebben ook addall gebruiken,
 		//deze laat dubbele woorden weg.
+
+		 **/
 		
-		**/
-		int V = vocabulary.size();
-		int occ = cc.getocc(word);
-		int Nc = cc.getvocsize();
+		double V = vocabulary.size();
+		double occ = cc.getocc(word);
+		double Nc = cc.getvocsize();
 		double estimator = (occ + k)/ (Nc + V);
 		
 		return estimator;
 	}
-	
+
 	public String classify(ArrayList<String> text){
-		double[] finalprob = new double[numberofclasses];
 		Map<String, Integer> tempmap = new HashMap<String, Integer>(); //tijdelijke map om voorkomen van woorden in op te slaan
 		for (String word : text) {// loop through all words.
 			if (tempmap.containsKey(word)) {// check if the dictionary contains
-											// the word(as a key).
+				// the word(as a key).
 				tempmap.put(word, tempmap.get(word) + 1);// then increment the
-													// occurence amount for
-													// that word with 1.
+				// occurence amount for
+				// that word with 1.
 			} else {
 				tempmap.put(word, 1);// otherwise add a new (key,value) pair to
-									// the map initially with a value equal
-									// to 1.
+				// the map initially with a value equal
+				// to 1.
 			}
 		}
 		Set<String> uniquewords = new HashSet<String>();
 		uniquewords.addAll(text);
 		ArrayList<String> uniquewordslist = new ArrayList<String>(uniquewords);
-		
+
 		double[] prob = new double[uniquewordslist.size()];
-		
-		for (int i = 0; i < numberofclasses; i++){ 
-			int files = getTotalFiles();
+
+		for (ClassifierClass child : classes){ 
+			double files = getTotalFiles();
 			//double prior = classes[i].getvocsize()/vocabulary.size();
-			double prior = classes[i].getNumberOfFiles()/files;
-			System.out.println(classes[i].getname() + " " + prior);
-			finalprob[i] = prior;
+			double prior = (double) child.getNumberOfFiles()/files;
+			System.out.println("total files : " + files);
+			System.out.println(child.getname() + "files: " + child.getNumberOfFiles());
+			System.out.println(child.getname() + " " + prior);
 			for(int x=0; x < uniquewordslist.size(); x++){
 				int power = tempmap.get(uniquewordslist.get(x));
-				
-				prob[x] = wordprob(uniquewordslist.get(x), classes[i]);
-				finalprob[i] = finalprob[i] * Math.pow(prob[x], power);
-				
-			}
+
+				prob[x] = wordprob(uniquewordslist.get(x), child);
+				prob[x] = Math.abs(Math.log(prob[x])/Math.log(2));
+				double set = child.getFinalProb() + Math.pow(prob[x], power);
+				child.setFinalProb(set);
+				}
+			child.setFinalProb(child.getFinalProb() * prior);
 			
 			
+
 		}
+		for (ClassifierClass child : classes) {
+			System.out.println(child.getname() + "final prob: " + child.getFinalProb());
+		}
+//		System.out.println(finalprob[0] + "<-- final probality on place one");
+//		System.out.println(finalprob[1] + "<-- final probality on place two");
 		//get maximum value of finalprob[i]
-		double vmax = finalprob[0];
-		int imax = 0;
-		for (int i = 0; i < finalprob.length; i++){
-			if (finalprob[imax] > vmax){
-			imax = i;
-			vmax = finalprob[imax];
+		double vmax = 0;
+		ClassifierClass finalClass = null;
+		for (ClassifierClass child : classes) {
+			if(child.getFinalProb() > vmax){
+				vmax = child.getFinalProb();
+				finalClass = child;
 			}
 		}
 		
-		return classes[imax].getname();
+		return finalClass.getname();
 	}
-	
+
 	public void updatevocsize(){
-		
-		for (int i = 0; i <= numberofclasses; i++){ 
-			vocabulary.addAll(classes[i].returnkeySet());
-			
+		for (ClassifierClass child : classes) {
+			vocabulary.addAll(child.returnkeySet());
+			System.out.println(child.getname() + " V-Set" + child.returnkeySet());
 		}
+		System.out.println(vocabulary.toString());
 	}
-	
+
 	public int getTotalFiles(){
 		int files = 0;
 		for (ClassifierClass child : classes){
@@ -120,16 +129,7 @@ public class MNBTClassifer {
 		return files;
 	}
 	public static void main(String[] args) {
-		Map<String, String> array = new HashMap<String, String>();
-		array.put("spam", "spm");
-		array.put("ham", "msg");
-		ArrayList<String> testfile= new ArrayList<String>();
-		testfile.add("viagra");
-		testfile.add("discount");
-		MNBTClassifer classifier = new MNBTClassifer(array);
-		classifier.updatevocsize();
-		classifier.classify(testfile);
 	}
-	
-	
+
+
 }

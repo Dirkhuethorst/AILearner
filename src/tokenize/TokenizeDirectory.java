@@ -1,17 +1,12 @@
 package tokenize;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import Classifier.ClassifierClass;
 
 public class TokenizeDirectory {
-	public static void main(String[] args) {
-		TokenizeDirectory dir = new TokenizeDirectory();
-
-
-	}
+	
 	public void DirectoryTokenizer(String directoryPath, ClassifierClass[] classes) {
 		File dir = new File(directoryPath);
 		File[] directoryListing = dir.listFiles();
@@ -33,8 +28,11 @@ public class TokenizeDirectory {
 			}
 		} else {
 			// TODO implement else
-		}
+		} 
+			
+		
 	}
+	
 	public String getCategory(ClassifierClass[] classes, String filename){
 		for (ClassifierClass child : classes){
 			if (filename.contains(child.getIdentifer())){

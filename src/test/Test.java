@@ -3,7 +3,6 @@ package test;
 import java.util.HashMap;
 import java.util.Map;
 
-import Classifier.ClassifierClass;
 import Classifier.MNBTClassifer;
 import tokenize.TokenizeDirectory;
 import tokenize.Tokenizer;
@@ -18,8 +17,10 @@ public class Test {
 		Tokenizer tokenizer = new Tokenizer();
 		TokenizeDirectory dir = new TokenizeDirectory();
 		dir.DirectoryTokenizer("EMAILS", classifier.getClasses());
-		
-		String spam = "EMAILS/spma7.txt";
+		classifier.updatevocsize();
+		System.out.println("V_SIZE " + classifier.getClasses()[0].getname() + "= " + classifier.getClasses()[0].getvocsize());
+		System.out.println("V_SIZE " + classifier.getClasses()[1].getname() + "= " + classifier.getClasses()[1].getvocsize());
+		String spam = "EMAILS/spma13.txt";
 		String ham =  "TESTMAILS/8-817msg1.txt";
 		System.out.println("Supposed to be spam: " + classifier.classify(tokenizer.tokenize(spam)));
 		System.out.println("Supposed to be ham: " + classifier.classify(tokenizer.tokenize(ham)));

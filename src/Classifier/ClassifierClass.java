@@ -9,6 +9,7 @@ public class ClassifierClass {
 	private String classname;
 	private String identifier;
 	private int numberOfFiles;
+	private double finalprob;
 	private Map<String, Integer> dict = new HashMap<String, Integer>();
 	
 	
@@ -16,6 +17,7 @@ public class ClassifierClass {
 		classname = name;
 		this.identifier = identifier;
 		numberOfFiles = 0;
+		finalprob = 0;
 	}
 	
 	public String getname(){
@@ -31,7 +33,12 @@ public class ClassifierClass {
 		return dict.keySet();
 	}
 	
-	
+	public double getFinalProb(){
+		return finalprob;
+	}
+	public void setFinalProb(double newFinal){
+		this.finalprob = newFinal;
+	}
 	
 	public void updatewords(List<String> words){
 		for (String word : words) {// loop through all words.
