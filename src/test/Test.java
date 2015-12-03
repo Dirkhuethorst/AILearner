@@ -23,7 +23,6 @@ public class Test {
 		String ham =  "TESTMAILS/8-817msg1.txt";
 		System.out.println("V_SIZE " + classifier.getClasses()[0].getname() + "= " + classifier.getClasses()[0].getvocsize());
 		System.out.println("V_SIZE " + classifier.getClasses()[1].getname() + "= " + classifier.getClasses()[1].getvocsize());
-		classifier.removeDuplicates();
 		classifier.updatevocsize();
 		System.out.println("V_SIZE " + classifier.getClasses()[0].getname() + "= " + classifier.getClasses()[0].getvocsize());
 		System.out.println("V_SIZE " + classifier.getClasses()[1].getname() + "= " + classifier.getClasses()[1].getvocsize());

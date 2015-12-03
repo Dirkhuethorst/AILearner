@@ -131,31 +131,4 @@ public class MNBTClassifer {
 	}
 	public static void main(String[] args) {
 	}
-	//TODO remove this stupid thing i am trying to make the predictions better...
-	public void removeDuplicates(){
-		Set<String> duplicates = new HashSet<String>();
-		for (ClassifierClass child : classes){
-			//System.out.println("DEBUG1");
-			for (ClassifierClass baby : classes) {
-				//System.out.println("DEBUG2");
-				if (baby != child){
-					//System.out.println("DEBUG3");
-					for (String word : baby.returnkeySet()){
-						//System.out.println("DEBUG4");
-						if (child.returnkeySet().contains(word)){
-							//System.out.println("DEBUG5");
-							duplicates.add(word);
-						}
-					}
-				}
-			}
-		}
-		for (ClassifierClass removeit : classes) {
-			for (String word : duplicates){
-				removeit.returnkeySet().remove(word);
-			}
-		}
-
-	}
-
 }

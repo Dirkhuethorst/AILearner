@@ -26,11 +26,7 @@ public class TokenizeDirectory {
 					}
 				} 
 			}
-		} else {
-			// TODO implement else
-		} 
-			
-		
+		} 		
 	}
 	
 	public String getCategory(ClassifierClass[] classes, String filename){
