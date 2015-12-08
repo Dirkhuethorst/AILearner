@@ -57,8 +57,11 @@ public class ClassifierClass {
 	}
 	
 	public int getvocsize(){
-	
-		return dict.size();
+		int result = 0;
+		for (String word : dict.keySet()){
+			result += dict.get(word);
+			}
+		return result;
 	}
 	
 	public int getocc(String word){

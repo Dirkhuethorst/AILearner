@@ -29,28 +29,15 @@ public class MNBTClassifer {
 	}
 	//calculate estimator for a word, given a class.
 	public double wordprob(String word, ClassifierClass cc) {
-		/**spamdict.put("viagra", 5);
-		spamdict.put("girls", 1);
-		spamdict.put("discount", 1);
-		spamdict.put("coupon", 1);
-		hamdict.put("viagra", 1);
-		hamdict.put("schedule", 1);
-		hamdict.put("meeting", 1);
-		vocabulary.add("viagra");
-		vocabulary.add("girls");
-		vocabulary.add("discount");
-		vocabulary.add("schedule");
-		vocabulary.add("meeting");
-		vocabulary.add("coupon"); //we kunnen als we meerdere voc. hebben ook addall gebruiken,
-		//deze laat dubbele woorden weg.
-
-		 **/
-
+		
 		double V = vocabulary.size();
 		double occ = cc.getocc(word);
 		double Nc = cc.getvocsize();
-		double estimator = (occ + k)/ (Nc + V);
-
+		double estimator = (occ + k)/ (Nc + (k*V));
+//		System.out.println("Vocabulary : " + V);
+//		System.out.println("Occurrance : " + occ);
+//		System.out.println("NC : " + Nc);
+//		System.out.println("Estimator : " + estimator);
 		return estimator;
 	}
 
@@ -78,37 +65,38 @@ public class MNBTClassifer {
 			double files = getTotalFiles();
 			//double prior = classes[i].getvocsize()/vocabulary.size();
 			double prior = (double) child.getNumberOfFiles()/files;
-			System.out.println("total files : " + files);
-			System.out.println(child.getname() + "files: " + child.getNumberOfFiles());
-			System.out.println(child.getname() + " " + prior);
+			//System.out.println("total files : " + files);
+			//System.out.println(child.getname() + "files: " + child.getNumberOfFiles());
+			//System.out.println(child.getname() + " " + prior);
 			for(int x=0; x < uniquewordslist.size(); x++){
 				int power = tempmap.get(uniquewordslist.get(x));
 
 				prob[x] = wordprob(uniquewordslist.get(x), child);
 				prob[x] = Math.log(prob[x])/Math.log(2);
-				double set = child.getFinalProb() + Math.pow(prob[x], power);
+				prob[x] = prob[x] * power;
+				double set = child.getFinalProb() + prob[x];
 				child.setFinalProb(set);
 			}
-			child.setFinalProb(child.getFinalProb() * prior);
+			child.setFinalProb(child.getFinalProb() + (Math.log(prior)/Math.log(2)));
 
 
 
 		}
 		for (ClassifierClass child : classes) {
-			System.out.println(child.getname() + "final prob: " + child.getFinalProb());
+			//System.out.println(child.getname() + "final prob: " + child.getFinalProb());
 		}
 		//		System.out.println(finalprob[0] + "<-- final probality on place one");
 		//		System.out.println(finalprob[1] + "<-- final probality on place two");
 		//get maximum value of finalprob[i]
-		double vmax = 0;
+		double vmax = classes[0].getFinalProb();
 		ClassifierClass finalClass = null;
 		for (ClassifierClass child : classes) {
-			if(child.getFinalProb() > vmax){
+			if(child.getFinalProb() >= vmax){
 				vmax = child.getFinalProb();
 				finalClass = child;
 			}
 		}
-
+		
 		return finalClass.getname();
 	}
 
@@ -118,7 +106,6 @@ public class MNBTClassifer {
 			vocabulary.addAll(child.returnkeySet());
 			i += child.returnkeySet().size();
 		}
-		System.out.println("This: " + i + " should be equal to this: " + vocabulary.size());
 	}
 
 	public int getTotalFiles(){
@@ -126,9 +113,8 @@ public class MNBTClassifer {
 		for (ClassifierClass child : classes){
 			files += child.getNumberOfFiles();
 		}
-		System.out.println(files);
+		//System.out.println(files);
 		return files;
 	}
-	public static void main(String[] args) {
-	}
+
 }
