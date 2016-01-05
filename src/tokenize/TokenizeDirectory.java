@@ -29,6 +29,22 @@ public class TokenizeDirectory {
 		} 		
 	}
 	
+	public void DirectoryTokenizer2(String directoryPath, ClassifierClass c_class) {
+		File dir = new File(directoryPath);
+		File[] directoryListing = dir.listFiles();
+		Tokenizer tokenizer = new Tokenizer();
+		if (directoryListing != null) {
+			for (File child : directoryListing) {				
+				
+				List<String> tokenized = tokenizer.tokenize(child.getPath());
+								
+				c_class.updatewords(tokenized);
+				c_class.increaseFileCount();
+			}	
+		}			
+	}
+	
+	
 	public String getCategory(ClassifierClass[] classes, String filename){
 		for (ClassifierClass child : classes){
 			if (filename.contains(child.getIdentifer())){
