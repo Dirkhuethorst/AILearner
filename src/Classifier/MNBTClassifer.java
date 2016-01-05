@@ -78,7 +78,7 @@ public class MNBTClassifer {
 				child.setFinalProb(set);
 			}
 			child.setFinalProb(child.getFinalProb() + (Math.log(prior)/Math.log(2)));
-
+			//System.out.println(child.getname() + ": " + child.getFinalProb() );
 
 
 		}

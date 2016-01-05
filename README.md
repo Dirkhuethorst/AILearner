@@ -1,2 +1,0 @@
-# AILearner
-Calvin
