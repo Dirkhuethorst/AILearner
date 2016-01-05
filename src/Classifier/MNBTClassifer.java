@@ -116,5 +116,9 @@ public class MNBTClassifer {
 		//System.out.println(files);
 		return files;
 	}
+	
+	public void addclass(Map<String, String> names){
+		
+	}
 
 }
