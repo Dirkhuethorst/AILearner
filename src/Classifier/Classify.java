@@ -132,7 +132,7 @@ public class Classify {
 								}
 								testarray = classifier.getClasses();
 								//print("test namen:" +testarray[0].getname() + testarray[1].getname() +testarray[2].getname());
-								//print("test oké");
+								//print("test ok");
 								print("What do you want to do? (ADDCLASS, TRAIN, TEST)");
 								break;
 							}
