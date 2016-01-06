@@ -15,20 +15,28 @@ public class Tokenizer {
 		try {
 			file = readFile(pathname);
 		} catch (IOException e) {
-			e.printStackTrace();
+
+			//e.printStackTrace();
+			return null;
 		}
 		// Split the string at a space and put the words in an arraylist
 		// remove all punctuation marks
 		String[] temp = file.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
+
 		ArrayList<String> res = new ArrayList<String>();
 		ArrayList<String> stopwords = stopwords();
 		for ( String word : temp) {
 			word = word.toLowerCase();
+			//System.out.println(word);
 			if (!stopwords.contains(word)){
 				res.add(word);
 			}
+
+
+
 		}
 		return res;
+
 
 	}
 

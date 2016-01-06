@@ -12,7 +12,7 @@ public class MNBTClassifer {
 	//public Map<String, Integer> spamdict = new HashMap<String, Integer>();
 	//public Map<String, Integer> hamdict = new HashMap<String, Integer>();
 	private Set<String> vocabulary = new HashSet<String>();
-	private int numberofclasses;
+	private int numberofclasses = 0;
 	private ClassifierClass[] classes; 
 
 	public MNBTClassifer(Map<String, String> names){ 
@@ -29,15 +29,15 @@ public class MNBTClassifer {
 	}
 	//calculate estimator for a word, given a class.
 	public double wordprob(String word, ClassifierClass cc) {
-		
+
 		double V = vocabulary.size();
 		double occ = cc.getocc(word);
 		double Nc = cc.getvocsize();
 		double estimator = (occ + k)/ (Nc + (k*V));
-//		System.out.println("Vocabulary : " + V);
-//		System.out.println("Occurrance : " + occ);
-//		System.out.println("NC : " + Nc);
-//		System.out.println("Estimator : " + estimator);
+		//		System.out.println("Vocabulary : " + V);
+		//		System.out.println("Occurrance : " + occ);
+		//		System.out.println("NC : " + Nc);
+		//		System.out.println("Estimator : " + estimator);
 		return estimator;
 	}
 
@@ -60,11 +60,13 @@ public class MNBTClassifer {
 		ArrayList<String> uniquewordslist = new ArrayList<String>(uniquewords);
 
 		double[] prob = new double[uniquewordslist.size()];
-
+		for (ClassifierClass child : classes){ 
+			child.setFinalProb(0);
+		}
 		for (ClassifierClass child : classes){ 
 			double files = getTotalFiles();
 			//double prior = classes[i].getvocsize()/vocabulary.size();
-			double prior = (double) child.getNumberOfFiles()/files;
+			double prior = child.getNumberOfFiles()/files;
 			//System.out.println("total files : " + files);
 			//System.out.println(child.getname() + "files: " + child.getNumberOfFiles());
 			//System.out.println(child.getname() + " " + prior);
@@ -78,16 +80,12 @@ public class MNBTClassifer {
 				child.setFinalProb(set);
 			}
 			child.setFinalProb(child.getFinalProb() + (Math.log(prior)/Math.log(2)));
-
-
+			double finalproob = child.getFinalProb();
+			String finalproobstring = fmt(finalproob);
+			//System.out.println(child.getname() +finalproob );
 
 		}
-		for (ClassifierClass child : classes) {
-			//System.out.println(child.getname() + "final prob: " + child.getFinalProb());
-		}
-		//		System.out.println(finalprob[0] + "<-- final probality on place one");
-		//		System.out.println(finalprob[1] + "<-- final probality on place two");
-		//get maximum value of finalprob[i]
+		
 		double vmax = classes[0].getFinalProb();
 		ClassifierClass finalClass = null;
 		for (ClassifierClass child : classes) {
@@ -96,7 +94,12 @@ public class MNBTClassifer {
 				finalClass = child;
 			}
 		}
-		
+		String answerclass = finalClass.getname();
+		Integer totfiles = getTotalFiles();
+		String totalfiles = totfiles.toString();
+		Integer vocsizetest = vocabulary.size();
+		String stringvocsize = vocsizetest.toString();
+		//System.out.println(answerclass +" " +"TotalFiles = "+totalfiles +" " +"Vocsize = " +stringvocsize);
 		return finalClass.getname();
 	}
 
@@ -116,9 +119,52 @@ public class MNBTClassifer {
 		//System.out.println(files);
 		return files;
 	}
-	
-	public void addclass(Map<String, String> names){
+
+	public void addclass(Map<String, String> names) throws Exception{
+		//check if classname already exists.
+		for (String name : names.keySet()){			
+			for (int h = 0; h < classes.length; h++){
+				if (classes[h].getname().equals(name)){					
+					throw new Exception();
+				}
+
+			}
+
+		}
 		
+		//make list of old and new classes.
+		numberofclasses = numberofclasses + names.size();
+		ClassifierClass[] tempclasses = new ClassifierClass[numberofclasses];
+		int i = 0;
+		for (String child : names.keySet()){ 
+			tempclasses[i] = new ClassifierClass(child, names.get(child));
+			i += 1;
+		}
+		for (ClassifierClass child : classes){
+			tempclasses[i]= child;
+			i +=1;
+		}
+		classes = new ClassifierClass[numberofclasses];
+		classes = tempclasses;
+		
+	}
+
+	public static String fmt(double d)
+	{
+		if(d == (long) d)
+			return String.format("%d",(long)d);
+		else
+			return String.format("%s",d);
+	}
+
+	public boolean allclassestrained(){
+
+		for(int x = 0; x < classes.length ; x++){
+			if(classes[x].returnkeySet().isEmpty()){
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
